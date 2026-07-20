@@ -7,19 +7,26 @@ import { useActionState, useEffect } from "react"
 import { toast } from "sonner"
 
 const LoginForm = () => {
-    const [state, action, pending] = useActionState(LoginAction, false)
+    const initialState = {
+        success: false,
+        statusCode: 0,
+        message: "",
+        data: {
+            accessToken: "",
+            refreshToken: ""
+        }
+    }
+
+    const [state, action, pending] = useActionState(LoginAction, initialState)
 
     useEffect(() => {
-        if(!state) return
-
-        if(state.success) {
+        if (state.success) {
             toast.success(state.message || "Login Successful")
-        }
-
-        if(!state.success){
-            toast.error(state.message || 'Login failed')
+        } else if (state.message) {
+            toast.error(state.message || "Login failed")
         }
     }, [state])
+
     return (
         <form action={action} className="space-y-6">
             <Card className="p-4 space-y-4">

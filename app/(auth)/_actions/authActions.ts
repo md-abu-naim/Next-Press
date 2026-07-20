@@ -1,6 +1,6 @@
 "use server"
-
 import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
 type loginState = {
     success: boolean,
@@ -12,7 +12,7 @@ type loginState = {
     }
 }
 
-export const LoginAction = async(prevAction: loginState, formData: FormData) => {
+export const LoginAction = async (prevState: loginState, formData: FormData) => {
     console.log(formData);
     const email = formData.get('email')
     const password = formData.get('password')
@@ -32,21 +32,24 @@ export const LoginAction = async(prevAction: loginState, formData: FormData) => 
 
     const result: loginState = await res.json()
 
-   if(result.success){
-    const cookieStore = await cookies()
+    if (result.success) {
+        const cookieStore = await cookies()
 
-    cookieStore.set("accessToken", result.data.accessToken, {
-        httpOnly: true,
-        maxAge: 60 * 60 * 24,
-        sameSite: 'lax'
-    })
+        cookieStore.set("accessToken", result.data.accessToken, {
+            httpOnly: true,
+            maxAge: 60 * 60 * 24,
+            sameSite: 'lax'
+        })
 
-    cookieStore.set("refreshToken", result.data.refreshToken, {
-        httpOnly: true,
-        maxAge: 60 * 60 * 24 * 7,
-        sameSite: 'lax'
-    })
-   }
+        cookieStore.set("refreshToken", result.data.refreshToken, {
+            httpOnly: true,
+            maxAge: 60 * 60 * 24 * 7,
+            sameSite: 'lax'
+        })
+
+        redirect('/')
+        // redirect('/', 'replace')
+    }
 
     return result
 }
