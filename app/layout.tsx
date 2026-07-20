@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner"
 import Navbar from "@/components/shared/Navber";
+import { getMe } from "@/service/getMe";
 
 const outfitHeading = Outfit({ subsets: ['latin'], variable: '--font-heading' });
 
@@ -24,11 +25,15 @@ export const metadata: Metadata = {
   description: "Next Press News Portal App",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const user = await getMe()
+  console.log(user);
+
   return (
     <html
       lang="en"
