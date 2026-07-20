@@ -13,7 +13,7 @@ import {
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -25,6 +25,9 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { logout } from "@/service/logout"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 const navLinks = [
   { label: "Dashboard", href: "/" },
@@ -41,28 +44,28 @@ const userMenuItems = [
 ]
 
 type IUser = {
-    "success": boolean,
-    "statusCode": number,
-    "message": string,
-    "data": {
-        "profile": {
-            "id": string,
-            "name": string,
-            "email": string,
-            "activeStatus": string,
-            "role": string,
-            "createdAt": string,
-            "updatedAt": string,
-            "profile": {
-                "id": string,
-                "profilePhoto": string,
-                "bio": string,
-                "userId": string,
-                "createdAt": string,
-                "updatedAt": string
-            }
-        }
+  "success": boolean,
+  "statusCode": number,
+  "message": string,
+  "data": {
+    "profile": {
+      "id": string,
+      "name": string,
+      "email": string,
+      "activeStatus": string,
+      "role": string,
+      "createdAt": string,
+      "updatedAt": string,
+      "profile": {
+        "id": string,
+        "profilePhoto": string,
+        "bio": string,
+        "userId": string,
+        "createdAt": string,
+        "updatedAt": string
+      }
     }
+  }
 }
 
 type NavberProps = {
@@ -70,7 +73,24 @@ type NavberProps = {
 }
 
 function Navbar({ user }: NavberProps) {
+  const [islogout, setLogout] = useState(false)
   const router = useRouter()
+
+  const handleUserMenuAction = async (action: string) => {
+    console.log(`User Menu Action: ${action}`);
+
+    if (action === 'logout') {
+      await logout()
+      setLogout(true)
+    }
+  }
+
+  useEffect(() => {
+    if (islogout) {
+      toast.success('User logOut Successfull')
+      router.push('/login')
+    }
+  }, [islogout, router])
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -97,37 +117,45 @@ function Navbar({ user }: NavberProps) {
         </nav>
 
         {/* User dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            className={cn(buttonVariants({ variant: "ghost" }), "gap-2 pl-1.5 pr-2")}
-          >
-            <Avatar className="size-7">
-              <AvatarImage src="/diverse-avatars.png" alt="User avatar" />
-              <AvatarFallback>{user.data.profile.name}</AvatarFallback>
-            </Avatar>
-            <span className="hidden text-sm font-medium sm:inline">{user.data.profile.name}</span>
-            <ChevronDown className="size-4 text-muted-foreground" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {userMenuItems.map((item) => (
-                <DropdownMenuItem key={item.href} onClick={() => router.push(item.href)}>
-                  <item.icon />
-                  {item.label}
-                  {item.shortcut && <DropdownMenuShortcut>{item.shortcut}</DropdownMenuShortcut>}
+        {
+          user.success ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                className={cn(buttonVariants({ variant: "ghost" }), "gap-2 pl-1.5 pr-2")}
+              >
+                <Avatar className="size-7">
+                  <AvatarImage src="/diverse-avatars.png" alt="User avatar" />
+                  <AvatarFallback>{user ? user.data.profile?.name : 'name'}</AvatarFallback>
+                </Avatar>
+                <span className="hidden text-sm font-medium sm:inline">{user ? user.data.profile?.name : 'JD'}</span>
+                <ChevronDown className="size-4 text-muted-foreground" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {userMenuItems.map((item) => (
+                    <DropdownMenuItem key={item.href} onClick={() => router.push(item.href)}>
+                      <item.icon />
+                      {item.label}
+                      {item.shortcut && <DropdownMenuShortcut>{item.shortcut}</DropdownMenuShortcut>}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive" onClick={async () => {
+                  await handleUserMenuAction('logout')
+                }}>
+                  <LogOut />
+                  Log out
+                  <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                 </DropdownMenuItem>
-              ))}
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">
-              <LogOut />
-              Log out
-              <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : <Link href={'/login'}>
+            <Button className="cursor-pointer">Login</Button>
+          </Link>
+        }
       </div>
     </header>
   )
