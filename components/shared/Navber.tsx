@@ -40,7 +40,36 @@ const userMenuItems = [
   { label: "Support", href: "/support", icon: LifeBuoy },
 ]
 
-function Navbar() {
+type IUser = {
+    "success": boolean,
+    "statusCode": number,
+    "message": string,
+    "data": {
+        "profile": {
+            "id": string,
+            "name": string,
+            "email": string,
+            "activeStatus": string,
+            "role": string,
+            "createdAt": string,
+            "updatedAt": string,
+            "profile": {
+                "id": string,
+                "profilePhoto": string,
+                "bio": string,
+                "userId": string,
+                "createdAt": string,
+                "updatedAt": string
+            }
+        }
+    }
+}
+
+type NavberProps = {
+  user: IUser
+}
+
+function Navbar({ user }: NavberProps) {
   const router = useRouter()
 
   return (
@@ -74,9 +103,9 @@ function Navbar() {
           >
             <Avatar className="size-7">
               <AvatarImage src="/diverse-avatars.png" alt="User avatar" />
-              <AvatarFallback>JD</AvatarFallback>
+              <AvatarFallback>{user.data.profile.name}</AvatarFallback>
             </Avatar>
-            <span className="hidden text-sm font-medium sm:inline">Jane Doe</span>
+            <span className="hidden text-sm font-medium sm:inline">{user.data.profile.name}</span>
             <ChevronDown className="size-4 text-muted-foreground" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
