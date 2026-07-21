@@ -5,7 +5,8 @@ import type { NextRequest } from 'next/server'
 export function proxy(request: NextRequest) {
     const pathname = request.nextUrl.pathname
     console.log(pathname);
-    return NextResponse.redirect(new URL('/', request.url))
+    // return NextResponse.redirect(new URL('/', request.url))
+    return NextResponse.next()
 }
 
 // Alternatively, you can use a default export:
@@ -13,7 +14,8 @@ export function proxy(request: NextRequest) {
 
 export const config = {
     matcher: [
-        '/dashboard/:path*',
-        '/admin-dashboard/:path*'
+        // '/dashboard/:path*',
+        // '/admin-dashboard/:path*'
+        '/((?!api|_next/static|favicon.ico|_next/image|.*\\.png$).*)',
     ],
 }
