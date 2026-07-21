@@ -1,6 +1,7 @@
 "use server"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
 type loginState = {
     success: boolean,
@@ -47,7 +48,15 @@ export const LoginAction = async (prevState: loginState, formData: FormData) => 
             sameSite: 'lax'
         })
 
-        redirect('/')
+        const decodedToken = jwt.decode(result.data.accessToken) as JwtPayload
+
+        if(decodedToken.role === 'USER'){
+            redirect('/')
+        }else if(decodedToken.role === 'AUTHOR'){
+            redirect('/author-dashboard')
+        }else if(decodedToken.role === 'ADMIN'){
+            redirect('/admin-dashboard')
+        }
         // redirect('/', 'replace')
     }
 
