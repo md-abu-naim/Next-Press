@@ -1,8 +1,7 @@
 
-const NewsDetails = () => {
-  return (
-    <div>NewsDetails</div>
-  )
-}
+const NewsByIdPage = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
+  return <div>NewsByIdPage {id}</div>;
+};
 
-export default NewsDetails
+export default NewsByIdPage

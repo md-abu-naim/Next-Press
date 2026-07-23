@@ -31,9 +31,9 @@ import { toast } from "sonner"
 
 const navLinks = [
   { label: "Dashboard", href: "/" },
-  { label: "Projects", href: "/projects" },
-  { label: "Team", href: "/team" },
-  { label: "Docs", href: "/docs" },
+  { label: "News", href: "/news" },
+  { label: "Premium", href: "/premium" },
+  { label: "Services", href: "/services" },
 ]
 
 const userMenuItems = [
