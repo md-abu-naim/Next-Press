@@ -12,7 +12,7 @@ export function NewsSearchBar() {
 
     const debouncedReference = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-    const handleChange = (value : string) => {
+    const handleChange = (value: string) => {
         // console.log(value);
 
         // const params = new URLSearchParams()
@@ -26,20 +26,20 @@ export function NewsSearchBar() {
         // router.replace(`${pathname}?${params.toString()}`)
 
 
-        if(debouncedReference.current){
+        if (debouncedReference.current) {
             clearTimeout(debouncedReference.current)
         }
 
 
-        debouncedReference.current = setTimeout(() =>{
+        debouncedReference.current = setTimeout(() => {
             console.log(value);
 
             const params = new URLSearchParams();
 
             if (value) {
-              params.set("searchTerm", value);
+                params.set("searchTerm", value);
             } else {
-              params.delete("searchTerm");
+                params.delete("searchTerm");
             }
 
             router.replace(`${pathname}?${params.toString()}`);
@@ -47,7 +47,7 @@ export function NewsSearchBar() {
 
 
     }
-   
+
 
     return (
         <div className="relative w-full max-w-sm">
