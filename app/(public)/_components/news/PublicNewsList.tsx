@@ -11,15 +11,29 @@ export async function PublicNewsList() {
         id: "1",
         title: "Public News 1",
         content: "This is the content of public news 1.",
-        thumbnail: "https://via.placeholder.com/150",
+        thumbnail: "https://i.postimg.cc/Jh39vKgR/any-vs-unknown.png",
         isFeatured: true,
         status: "PUBLISHED",
         tags: ["tag1", "tag2"],
         views: 100,
         isPremium: false,
         authorId: "1",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: '2026-07-25',
+        updatedAt: '2026-07-25',
+      },
+      {
+        id: "2",
+        title: "Public News 1",
+        content: "This is the content of public news 1.",
+        thumbnail: "https://i.postimg.cc/Jh39vKgR/any-vs-unknown.png",
+        isFeatured: true,
+        status: "PUBLISHED",
+        tags: ["tag1", "tag2"],
+        views: 100,
+        isPremium: false,
+        authorId: "1",
+        createdAt: '2026-07-25',
+        updatedAt: '2026-07-25',
       }
     ]
   };
@@ -39,7 +53,6 @@ export async function PublicNewsList() {
           <NewsCard key={post.id} post={post} />
         ))}
       </div>
-      
     </div>
   );
 }

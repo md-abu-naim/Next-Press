@@ -16,7 +16,7 @@ export const getSubscriptionStatus = async () => {
             }
         }
 
-    const res = await fetch(`${process.env.BACKEND_API_URL}/api/subscription/status`, {
+    const res = await fetch(`${process.env.BACKEND_URL}/api/subscription/status`, {
         headers: {
             // Authorization : accessToken as unknown as string,
             // Authorization : `${accessToken}`,

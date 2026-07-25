@@ -27,7 +27,7 @@ export const getPremiumNews = async ({query } : { query?: { [key: string]: strin
             }
         }
 
-    const res = await fetch(`${process.env.BACKEND_API_URL}/api/premium?${params.toString()}`, {
+    const res = await fetch(`${process.env.BACKEND_URL}/api/premium?${params.toString()}`, {
         headers: {
             // Authorization : accessToken as unknown as string,
             // Authorization : `${accessToken}`,
