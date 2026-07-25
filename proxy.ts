@@ -4,6 +4,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken'
 import { jwtUtils } from './utils/jwt'
 import { cookies } from 'next/headers'
 import { getNewAccessToken } from './service/getNewAccessToken'
+import { getSubscriptionStatus } from './app/(public)/_actions/getSubscriptionStatus'
 
 const AUTH_ROUTES = ['/login', '/register']
 const PUBLIC_ROUTES = ['/', '/news', '/login', '/register']
@@ -33,7 +34,7 @@ export async function proxy(request: NextRequest) {
             })
 
             accessToken = newAccessToken
-            decodedAccessToken =  await jwtUtils.verifyToken(accessToken!, process.env.JWT_ACCESS_SECRET as string)
+            decodedAccessToken = await jwtUtils.verifyToken(accessToken!, process.env.JWT_ACCESS_SECRET as string)
         }
     }
 
@@ -74,6 +75,24 @@ export async function proxy(request: NextRequest) {
     }
     if (pathname.startsWith('/author-dashboard') && userRole !== 'AUTHOR') {
         return NextResponse.redirect(new URL('/not-found', request.url))
+    }
+
+    const subscriptionStatus = await getSubscriptionStatus()
+
+    const isActive = Boolean(
+        subscriptionStatus?.success && subscriptionStatus.data?.isSubscribed,
+    );
+
+    if (pathname === '/premium') {
+        if (!isActive) {
+            return NextResponse.redirect(new URL('/payment', request.url))
+        }
+    }
+
+    if(pathname === '/payment'){
+        if(isActive){
+            return NextResponse.redirect(new URL('/premium', request.url))
+        }
     }
 
     return NextResponse.next()

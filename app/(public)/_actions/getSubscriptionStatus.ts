@@ -16,17 +16,15 @@ export const getSubscriptionStatus = async () => {
             }
         }
 
-    const res = await fetch(`${process.env.BACKEND_URL}/api/subscription/status`, {
+    const res = await fetch(`${process.env.BACKEND_URL}/api/subscription/stats`, {
         headers: {
-            // Authorization : accessToken as unknown as string,
-            // Authorization : `${accessToken}`,
-            // Authorization : `Bearer ${accessToken}`
-
             Cookie: `accessToken=${accessToken}`
         }
     });
 
     const result = await res.json();
+
+    console.log(result, 'from subscription stats');
 
     return result;
 }
