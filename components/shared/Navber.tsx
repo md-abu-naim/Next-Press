@@ -33,7 +33,7 @@ const navLinks = [
   { label: "Dashboard", href: "/" },
   { label: "News", href: "/news" },
   { label: "Premium", href: "/premium" },
-  { label: "Services", href: "/services" },
+  { label: "Payment", href: "/payment" },
 ]
 
 const userMenuItems = [

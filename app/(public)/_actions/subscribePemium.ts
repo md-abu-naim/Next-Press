@@ -20,10 +20,6 @@ export const subscribePremium = async () => {
     const res = await fetch(`${process.env.BACKEND_URL}/api/subscription/checkout`, {
             method : "POST",
             headers: {
-                // Authorization : accessToken as unknown as string,
-                // Authorization : `${accessToken}`,
-                // Authorization : `Bearer ${accessToken}`
-    
                 Cookie: `accessToken=${accessToken}`
             }
         });
