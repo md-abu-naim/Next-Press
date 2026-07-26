@@ -30,7 +30,7 @@ import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 const navLinks = [
-  { label: "Dashboard", href: "/" },
+  { label: "Dashboard", href: "/dashboard" },
   { label: "News", href: "/news" },
   { label: "Premium", href: "/premium" },
   { label: "Payment", href: "/payment" },
@@ -91,6 +91,7 @@ function Navbar({ user }: NavberProps) {
       router.push('/login')
     }
   }, [islogout, router])
+
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

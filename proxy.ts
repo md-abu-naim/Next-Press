@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import jwt, { JwtPayload } from 'jsonwebtoken'
+import { JwtPayload } from 'jsonwebtoken'
 import { jwtUtils } from './utils/jwt'
 import { cookies } from 'next/headers'
 import { getNewAccessToken } from './service/getNewAccessToken'
@@ -44,7 +44,7 @@ export async function proxy(request: NextRequest) {
     }
 
     if (decodedAccessToken?.success && decodedAccessToken.data) {
-        userRole = (decodedAccessToken as JwtPayload).role
+        userRole = (decodedAccessToken.data as JwtPayload).role
     }
 
     if (accessToken && AUTH_ROUTES.includes(pathname)) {
@@ -60,6 +60,7 @@ export async function proxy(request: NextRequest) {
             return NextResponse.redirect(new URL('/', request.url))
         }
     }
+
 
     const isPublic = PUBLIC_ROUTES.some((route) => pathname === route || pathname.startsWith(route + '/'))
 
@@ -86,18 +87,6 @@ export async function proxy(request: NextRequest) {
 
         if (!isActive) {
             return NextResponse.redirect(new URL('/payment', request.url))
-        }
-    }
-
-    if (pathname === '/payment') {
-        const subscriptionStatus = await getSubscriptionStatus()
-
-        const isActive = Boolean(
-            subscriptionStatus?.success && subscriptionStatus.data?.isSubscribed,
-        );
-
-        if (isActive) {
-            return NextResponse.redirect(new URL('/premium', request.url))
         }
     }
     
