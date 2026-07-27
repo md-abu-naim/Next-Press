@@ -65,7 +65,11 @@ export async function proxy(request: NextRequest) {
     const isPublic = PUBLIC_ROUTES.some((route) => pathname === route || pathname.startsWith(route + '/'))
 
     if (!accessToken && !isPublic) {
-        return NextResponse.redirect(new URL('/login', request.url))
+        const loginUrl = new URL('/login', request.url)
+
+        loginUrl.searchParams.set("redirectTo", pathname)
+
+        return NextResponse.redirect(loginUrl)
     }
 
     if (pathname.startsWith('/dashboard') && userRole !== 'USER') {
