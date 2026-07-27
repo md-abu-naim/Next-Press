@@ -13,15 +13,13 @@ type loginState = {
     }
 }
 
-export const LoginAction = async (prevState: loginState, formData: FormData) => {
-    console.log(formData);
+export const LoginAction = async (redirectTo : string, prevState: loginState, formData: FormData) => {
     const email = formData.get('email')
     const password = formData.get('password')
 
     const payload = {
         email, password
     }
-
 
     const res = await fetch(`${process.env.BACKEND_URL}/api/auth/login`, {
         method: "POST",
@@ -49,6 +47,10 @@ export const LoginAction = async (prevState: loginState, formData: FormData) => 
         })
 
         const decodedToken = jwt.decode(result.data.accessToken) as JwtPayload
+
+        if(redirectTo && typeof redirectTo === 'string' && redirectTo.startsWith('/') && !redirectTo.startsWith('//')){
+            redirect(redirectTo)
+        }
 
         if (decodedToken.role === 'USER') {
             redirect('/')
