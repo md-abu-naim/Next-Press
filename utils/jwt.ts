@@ -3,7 +3,7 @@
 import jwt from "jsonwebtoken"
 
 
-const verifyToken = async (token: string, secret: string) => {
+export const verifyToken = async (token: string, secret: string) => {
     try {
         const verifyToken = jwt.verify(token, secret)
         return {
@@ -17,8 +17,4 @@ const verifyToken = async (token: string, secret: string) => {
             error: error.message
         }
     }
-}
-
-export const jwtUtils = {
-     verifyToken
 }

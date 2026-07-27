@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { JwtPayload } from 'jsonwebtoken'
-import { jwtUtils } from './utils/jwt'
 import { cookies } from 'next/headers'
 import { getNewAccessToken } from './service/getNewAccessToken'
 import { getSubscriptionStatus } from './app/(public)/_actions/getSubscriptionStatus'
+import { verifyToken } from './utils/jwt'
 
 const AUTH_ROUTES = ['/login', '/register']
 const PUBLIC_ROUTES = ['/', '/news', '/login', '/register']
@@ -16,8 +16,8 @@ export async function proxy(request: NextRequest) {
     let accessToken = request.cookies.get("accessToken")?.value
     const refreshToken = request.cookies.get("refreshToken")?.value
 
-    let decodedAccessToken = accessToken ? await jwtUtils.verifyToken(accessToken, process.env.JWT_ACCESS_SECRET as string) : null
-    const decodedRefreshToken = refreshToken ? await jwtUtils.verifyToken(refreshToken, process.env.JWT_ACCESS_SECRET as string) : null
+    let decodedAccessToken = accessToken ? await verifyToken(accessToken, process.env.JWT_ACCESS_SECRET as string) : null
+    const decodedRefreshToken = refreshToken ? await verifyToken(refreshToken, process.env.JWT_ACCESS_SECRET as string) : null
 
     let userRole = null
 
@@ -34,7 +34,7 @@ export async function proxy(request: NextRequest) {
             })
 
             accessToken = newAccessToken
-            decodedAccessToken = await jwtUtils.verifyToken(accessToken!, process.env.JWT_ACCESS_SECRET as string)
+            decodedAccessToken = await verifyToken(accessToken!, process.env.JWT_ACCESS_SECRET as string)
         }
     }
 

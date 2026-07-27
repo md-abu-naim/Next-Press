@@ -1,5 +1,6 @@
 "use server"
 
+import { verifyToken } from "@/utils/jwt"
 import { cookies } from "next/headers"
 
 export const getNewAccessToken = async () => {
@@ -7,7 +8,7 @@ export const getNewAccessToken = async () => {
 
     const refreshToken = cookieStore.get('refreshToken')?.value
 
-    if(!refreshToken) {
+    if (!refreshToken) {
         return {
             success: false,
             message: 'User not Logged in!'
@@ -27,4 +28,39 @@ export const getNewAccessToken = async () => {
     console.log(result);
 
     return result
+}
+
+export const isAccessTokenExists = async () => {
+    const cookieStore = await cookies()
+
+    let accessToken = cookieStore.get('accessToken')?.value
+    const refreshToken = cookieStore.get('refreshToken')?.value
+
+    if (!accessToken && !refreshToken) {
+        return {
+            success: false,
+            message: 'User not Logged in!'
+        }
+    }
+
+    const decodedAccessToken = accessToken ? await verifyToken(accessToken, process.env.JWT_ACCESS_SECRET as string) : null
+    const decodedRefreshToken = refreshToken ? await verifyToken(refreshToken, process.env.JWT_ACCESS_SECRET as string) : null
+
+    if (!decodedAccessToken?.success && decodedRefreshToken?.success) {
+        const result = await getNewAccessToken()
+
+        if (result.success) {
+            const newAccessToken = result.data.accessToken
+
+            cookieStore.set("accessToken", newAccessToken, {
+                httpOnly: true,
+                maxAge: 60 * 60 * 24,
+                sameSite: 'lax'
+            })
+
+            accessToken = newAccessToken
+        }
+    }
+
+    return accessToken
 }
