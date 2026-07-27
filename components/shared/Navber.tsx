@@ -79,6 +79,20 @@ function Navbar({ user }: NavberProps) {
   const handleUserMenuAction = async (action: string) => {
     console.log(`User Menu Action: ${action}`);
 
+    if (action === "/dashboard") {
+      if (user.data.profile.role === "USER") {
+        router.push("/dashboard")
+      }
+      else if (user.data.profile.role === "AUTHOR") {
+        router.push("/author-dashboard")
+      }
+      else if (user.data.profile.role === "ADMIN") {
+        router.push("/admin-dashboard")
+      }
+
+      return;
+    }
+
     if (action === 'logout') {
       await logout()
       setLogout(true)
@@ -136,7 +150,7 @@ function Navbar({ user }: NavberProps) {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   {userMenuItems.map((item) => (
-                    <DropdownMenuItem key={item.href} onClick={() => router.push(item.href)}>
+                    <DropdownMenuItem key={item.href} onClick={() => handleUserMenuAction(item.href)}>
                       <item.icon />
                       {item.label}
                       {item.shortcut && <DropdownMenuShortcut>{item.shortcut}</DropdownMenuShortcut>}
